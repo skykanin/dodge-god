@@ -1,35 +1,56 @@
-var express = require('express');
-var app = express();
+var express = require('express')
+var app = express()
 var fs = require('fs')
+var zlib = require('zlib')
 
-let scores = {}
+let KEY=process.env.KEY
+let version=10
+let scores = { mouse: {}, keyboard: {} }
+
 fs.readFile("./scores.json",null,function(err,data){
-	if(err) return console.log("kys"); 
-	console.log(data)
-	scores=JSON.parse(data)
+	if(err) {
+	  return fs.writeFile("./scores.json", JSON.stringify(scores))
+	}else{
+	  scores=JSON.parse(data)
+	}
+	console.log(scores)
 })
 
-app.get('/', function(req,res){
-	if("time" in req.query && "name" in req.query){
-		name=req.query.name
-		time=Number(req.query.time)
-		prevTime= name in scores ? scores[name][0] : 0;
-		if (time > prevTime || !prevTime) {
-			let d=new Date().toDateString().split(" ")
-			scores[name] = [time,`${d[2]}.${d[1]}.${d[3]}`]
-			fs.writeFile("./scores.json",JSON.stringify(scores),function(err){
-				if (err) console.log(err)
-			})
-		}
-	}
-
-	res.send(sortScore())
+app.post('/', (req,res)=>{
+  console.log(req.query)
+  if ("s" in req.query){
+    let s = req.query.s
+    let score = decrypt(s)
+    calculateScore(score)
+  }else{
+    console.log("wrong submit")
+  }
+  res.send(scores)
 })
 app.get('/scores', function(req,res){
-	res.send(sortScore())
+	res.send(scores)
 })
+
 function sortScore(){
 	return Object.entries(scores).sort((a,b)=>b[1][0]-a[1][0])
 }
-app.listen(3000);
+
+function calculateScore(score){
+  // [mouse, keyboard, is_pb, your_mouse, your_keyboard, right_version, cheating]
+  let date = new Date()
+  if (!(score.name in scores[score.mode]) ||
+      (score.name in scores[score.mode] && score.time > scores[score.mode][score.name][2])) {
+    
+    scores[score.mode][score.name] = [score.dodge, date, score.time]
+  }
+}
+
+function decrypt(d){
+  let b = Buffer.from(d, 'base64')
+  let x = b.map(a=>a^KEY)
+  let s = zlib.inflateSync(x)
+  return JSON.parse(s.toString())
+}
+
+app.listen(3000)
 console.log("listening on port 3000")
