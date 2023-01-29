@@ -52,5 +52,18 @@ function decrypt(d){
   return JSON.parse(s.toString())
 }
 
+function encrypt(d){
+  let j=JSON.stringify(d)
+  let s = zlib.deflateSync(j)
+  let x = s.map(a=>a^KEY)
+  return x.toString('base64')
+}
+
+let j = {yo:123,test:[1,3,4]}
+let d = encrypt(j)
+console.log(d)
+let e = decrypt(d)
+console.log(e)
+
 app.listen(3000)
 console.log("listening on port 3000")
