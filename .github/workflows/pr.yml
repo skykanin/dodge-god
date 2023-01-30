@@ -31,14 +31,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-
 
-    - uses: haskell/actions/setup@v2
-      with:
-        ghc-version: '9.2.4'
-        cabal-version: '3.6'
-
+    - name: Install cabal@3.8.1.8
+      run: ghcup install cabal 3.8.1.0 --set
 
     - name: Install dependencies
-      run: cabal build
+      run: cabal build --enable-tests
 
     - name: Run tests
       run: cabal test
