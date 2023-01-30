@@ -35,7 +35,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        cabal update
         cabal build
     - name: Run tests
       run: cabal test
