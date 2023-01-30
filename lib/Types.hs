@@ -1,4 +1,4 @@
-module Types (Score, Mode) where
+module Types (Score, Mode, name, mode, version, dodge, startTime, endTime, time) where
 import GHC.Generics (Generic)
 import Data.Aeson
 

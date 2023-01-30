@@ -6,6 +6,8 @@ common shared
   default-extensions: DeriveAnyClass, OverloadedStrings
   default-language: GHC2021
   build-depends:    base ^>=4.16.3.0,
+                    text,
+                    aeson
   ghc-options:      -Wall -O2
 
 executable dodge-god
@@ -14,7 +16,6 @@ executable dodge-god
 
   build-depends:    scotty,
                     decrypt,
-                    aeson
   hs-source-dirs:   src
 
 test-suite decrypt-test
@@ -30,10 +31,11 @@ library decrypt
   import:           shared
   build-depends:    bytestring,
                     binary,
-                    aeson,
                     base64-bytestring,
                     zlib
   hs-source-dirs:   lib
   exposed-modules:  Decrypt,
                     Encrypt,
-                    Types
+                    Types,
+                    Util
+
