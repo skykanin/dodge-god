@@ -3,6 +3,7 @@ module Main where
 import Decrypt
 import Web.Scotty
 import Data.Word
+import Data.Text.Lazy (pack)
 import Data.Aeson.Text (encodeToLazyText)
 import System.Environment (getEnv)
 
@@ -20,4 +21,4 @@ startServer key =
     post "/" $ do
       s <- param "s"
       let d = decrypt key s
-      Web.Scotty.json $ encodeToLazyText d
+      text $ pack d
