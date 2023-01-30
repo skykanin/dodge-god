@@ -16,10 +16,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: haskell/actions/setup@v2
-      with:
-        ghc-version: '9.2.4'
-        cabal-version: '3.6'
 
     - name: Cache
       uses: actions/cache@v3
@@ -29,13 +25,20 @@ jobs:
         path: |
           ~/.cabal/packages
           ~/.cabal/store
+          ~/.ghcup
           dist-newstyle
         key: ${{ runner.os }}-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
         restore-keys: |
           ${{ runner.os }}-
 
+    - uses: haskell/actions/setup@v2
+      with:
+        ghc-version: '9.2.4'
+        cabal-version: '3.6'
+
+
     - name: Install dependencies
-      run: |
-        cabal build
+      run: cabal build
+
     - name: Run tests
       run: cabal test
