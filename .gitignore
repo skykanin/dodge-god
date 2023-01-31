@@ -1,6 +1,6 @@
 node_modules
 dist-newstyle
-leaderboard.json
+leaderboard*.json
 
 # Direnv
 .direnv/
