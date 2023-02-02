@@ -8,10 +8,11 @@ import Decrypt
 import Types
 import Web.Scotty
 import Encrypt
-import Data.Text.Lazy.Encoding (encodeUtf8)
-import Network.HTTP.Types (status400)
+import Data.Text.Lazy.Encoding (encodeUtf8, decodeUtf8)
+import Network.HTTP.Types (status400, status200)
 import Control.Exception (SomeException)
-import Control.Monad.Catch (catch)
+import Control.Monad.Catch (catch, try)
+import Data.ByteString.Lazy (ByteString)
 
 startServer :: Int -> Word8 -> IO ()
 startServer port key =
@@ -26,15 +27,13 @@ startServer port key =
 handle p key = 
   case lookup "s" p of
     Just r -> parseSubmission r key
-    _ -> status status400 
+    _ -> raiseStatus status400 "submission error"
 
 parseSubmission r key = do
   let d = decrypt key $ encodeUtf8 r
-  catch (pure d) decryptHandler
+  let handler = (\_ -> raiseStatus status400 "decrypt error") :: SomeException -> ActionM ()
 
-decryptHandler e = do
-  let err = show (e :: SomeException)
-  liftIO $ putStrLn err
-  status status400
+  catch (raiseStatus status200 $ decodeUtf8 d) handler
+
 
 -- liftIO . print . decode @ScoreSubmission . 
