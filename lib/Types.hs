@@ -1,4 +1,4 @@
-module Types (Score (..), Mode (..)) where
+module Types (ScoreSubmission (..), Mode (..)) where
 
 import Data.Aeson
 import Data.Char qualified as C
@@ -7,22 +7,25 @@ import GHC.Generics (Generic)
 data Mode = Mouse | Keyboard
   deriving (Enum, Show, Eq, Generic)
 
-parseOptions :: Options
-parseOptions = defaultOptions {constructorTagModifier = map C.toLower}
+modeParseOptions :: Options
+modeParseOptions = defaultOptions {constructorTagModifier = map C.toLower}
 
-instance ToJSON Mode where
-  toJSON = genericToJSON parseOptions
 
 instance FromJSON Mode where
-  parseJSON = genericParseJSON parseOptions
+  parseJSON = genericParseJSON modeParseOptions
 
-data Score = Score
+data ScoreSubmission = ScoreSubmission 
   { name :: String
   , mode :: Mode
-  , version :: Double
-  , dodge :: Double
-  , startTime :: String
-  , endTime :: String
+  , version :: Int
+  , startTime :: Int
+  , endTime :: Int
   , time :: Double
   }
-  deriving (Show, Eq, Generic, FromJSON, ToJSON)
+  deriving (Show, Eq, Generic)
+
+scoreSubmissionParseOptions :: Options
+scoreSubmissionParseOptions = defaultOptions {fieldLabelModifier = (++) "_"}
+
+instance FromJSON ScoreSubmission where
+  parseJSON = genericParseJSON scoreSubmissionParseOptions

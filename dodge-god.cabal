@@ -17,9 +17,23 @@ executable dodge-god
   import:           shared
   main-is:          Main.hs
 
-  build-depends:    scotty,
-                    decrypt,
+  build-depends:    dodge-god-lib,
   hs-source-dirs:   src
+
+library dodge-god-lib
+  import:           shared,
+  build-depends:    bytestring,
+                    binary,
+                    base64-bytestring,
+                    scotty,
+                    zlib,
+                    http-types,
+                    exceptions
+  hs-source-dirs:   lib
+  exposed-modules:  Decrypt,
+                    Encrypt,
+                    Server,
+                    Types,
 
 test-suite decrypt-test
   import:           shared
@@ -28,18 +42,7 @@ test-suite decrypt-test
   build-depends:    tasty,
                     tasty-hunit,
                     tasty-quickcheck,
-                    decrypt
+                    dodge-god-lib
   hs-source-dirs:   test
   other-modules:    ArbitraryInstances
-
-library decrypt
-  import:           shared
-  build-depends:    bytestring,
-                    binary,
-                    base64-bytestring,
-                    zlib
-  hs-source-dirs:   lib
-  exposed-modules:  Decrypt,
-                    Encrypt,
-                    Types,
 
