@@ -1,13 +1,11 @@
 module Server (startServer) where
 
-import Data.Text.Lazy (Text)
+import Data.Text.Lazy (Text, pack)
 import Data.Word
 import Decrypt
 import Web.Scotty
 import Data.Text.Lazy.Encoding (encodeUtf8, decodeUtf8)
 import Network.HTTP.Types (status400, status200)
-import Control.Exception (SomeException)
-import Control.Monad.Catch (catch)
 import Web.Scotty.Internal.Types (ActionT)
 
 startServer :: Int -> Word8 -> IO ()
@@ -29,9 +27,9 @@ handle p key =
 parseSubmission :: Text -> Word8 -> ActionT Text IO ()
 parseSubmission r key = do
   let d = decrypt key $ encodeUtf8 r
-  let handler = (\_ -> raiseStatus status400 "decrypt error") :: SomeException -> ActionM ()
-
-  catch (raiseStatus status200 $ decodeUtf8 d) handler
+  case d of
+    Left e -> raiseStatus status400 $ pack $ show e
+    Right d' -> raiseStatus status200 $ decodeUtf8 d'
 
 
 -- liftIO . print . decode @ScoreSubmission . 

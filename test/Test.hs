@@ -16,10 +16,10 @@ tests :: TestTree
 tests =
   testGroup
     "Tests"
-    [ testCase "decrypt" $ input @=? decrypt key encrypted
+    [ testCase "decrypt" $ Right input @=? decrypt key encrypted
     , testCase "encrypt" $ encrypted @=? encrypt key input
-    , testCase "decrypt == encrypted" $ input @=? decrypt key (encrypt key input)
-    , testCase "encrypt" $ encrypted @=? encrypt key input
+    , testCase "decrypt == encrypted" $ Right input @=? decrypt key (encrypt key input)
+    , testCase "encrypt" $ encrypted @=? encrypt key input 
     , testProperty "'Score's JSON encoding and decoding are bijective" $
        -- run 100 test cases for the property
        withMaxSuccess 100 scoreEncodingIsBijective
