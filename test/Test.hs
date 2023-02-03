@@ -30,5 +30,5 @@ tests =
     encrypted = "A+dIT0l9e3pWe+w="
 
 -- Encoding and decoding a 'Score' to JSON should return the value you started with
-scoreEncodingIsBijective :: Score -> Bool
+scoreEncodingIsBijective :: ScoreSubmission -> Bool
 scoreEncodingIsBijective score = Just score == JSON.decode (JSON.encode score)

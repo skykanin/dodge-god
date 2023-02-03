@@ -8,15 +8,14 @@ import Types
 instance Arbitrary Mode where
   arbitrary = chooseEnum (Mouse, Keyboard)
 
-instance Arbitrary Score where
+instance Arbitrary ScoreSubmission where
   arbitrary = do
     name <- alphanum
     mode <- arbitrary
     version <- arbitrary
-    dodge <- arbitrary
     startTime <- arbitrary
     endTime <- arbitrary
     time <- arbitrary
-    pure $ Score name mode version dodge startTime endTime time
+    pure $ ScoreSubmission name mode version startTime endTime time
     where
       alphanum = listOf . elements $ ['a' .. 'z'] <> ['0' .. '9']
