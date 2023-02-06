@@ -48,3 +48,14 @@ jobs:
 
       - name: Run tests
         run: cabal test
+
+      - uses: actions/cache/save@v3
+        if: always()
+        with:
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            ~/.cabal/bin
+            ~/.ghcup
+            dist-newstyle
+          key: ${{ runner.os }}-${{ hashFiles('**/*.cabal', '**/cabal.project', '**/cabal.project.freeze') }}
