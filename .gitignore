@@ -5,3 +5,6 @@ leaderboard*.json
 # Direnv
 .direnv/
 .envrc
+
+# Emacs
+.dir-locals.el
